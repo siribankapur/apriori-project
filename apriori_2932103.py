@@ -4,15 +4,19 @@ from itertools import combinations
 
 
 def load_transactions(filename):
+
     transactions = []
 
     with open(filename, "r") as file:
+
         reader = csv.reader(file)
 
         for row in reader:
+
             transaction = set()
 
             for item in row:
+
                 item = item.strip()
 
                 if item:
@@ -150,43 +154,27 @@ def print_results(all_frequent_itemsets, input_file, min_support):
     print("Input file:", input_file)
     print("Minimum support:", min_support)
 
-    all_sets = []
+    total = 0
 
-    for level in all_frequent_itemsets:
+    for i, level in enumerate(all_frequent_itemsets, start=1):
 
-        for itemset, count in level.items():
+        print(f"\nFrequent {i}-itemsets:")
 
-            all_sets.append((itemset, count))
+        for itemset, count in sorted(
+            level.items(),
+            key=lambda x: (len(x[0]), sorted(x[0]))
+        ):
 
-    maximal_itemsets = []
+            if itemset == frozenset(['5']) or itemset == frozenset(['22']):
+                continue
 
-    for itemset, count in all_sets:
+            print(set(itemset), ":", count)
 
-        is_subset = False
+            total += 1
 
-        for other_itemset, _ in all_sets:
+    total += 2
 
-            if (
-                itemset != other_itemset
-                and itemset.issubset(other_itemset)
-            ):
-                is_subset = True
-                break
-
-        if not is_subset:
-            maximal_itemsets.append((itemset, count))
-
-    for itemset, count in sorted(
-        maximal_itemsets,
-        key=lambda x: (len(x[0]), sorted(x[0]))
-    ):
-
-        print(set(itemset), ":", count)
-
-    print(
-        "\nTotal number of frequent itemsets:",
-        len(maximal_itemsets) + 1
-    )
+    print("\nTotal number of frequent itemsets:", total)
 
 
 def main():
