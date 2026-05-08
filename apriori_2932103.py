@@ -25,16 +25,21 @@ def load_transactions(filename):
 
 
 def find_frequent_1_itemsets(transactions, min_support):
+
     item_counts = {}
 
     for transaction in transactions:
+
         for item in transaction:
+
             itemset = frozenset([item])
+
             item_counts[itemset] = item_counts.get(itemset, 0) + 1
 
     frequent_1 = {}
 
     for itemset, count in item_counts.items():
+
         if count >= min_support:
             frequent_1[itemset] = count
 
@@ -42,10 +47,13 @@ def find_frequent_1_itemsets(transactions, min_support):
 
 
 def has_infrequent_subset(candidate, prev_frequent_itemsets):
+
     prev_set = set(prev_frequent_itemsets.keys())
+
     k = len(candidate)
 
     for subset in combinations(candidate, k - 1):
+
         if frozenset(subset) not in prev_set:
             return True
 
@@ -53,12 +61,15 @@ def has_infrequent_subset(candidate, prev_frequent_itemsets):
 
 
 def apriori_gen(prev_frequent_itemsets):
+
     candidates = []
 
     prev_itemsets = list(prev_frequent_itemsets.keys())
+
     length = len(prev_itemsets)
 
     for i in range(length):
+
         for j in range(i + 1, length):
 
             l1 = sorted(list(prev_itemsets[i]))
@@ -77,17 +88,23 @@ def apriori_gen(prev_frequent_itemsets):
 
 
 def count_candidates(transactions, candidates, min_support):
+
     candidate_counts = {}
 
     for transaction in transactions:
+
         for candidate in candidates:
 
             if candidate.issubset(transaction):
-                candidate_counts[candidate] = candidate_counts.get(candidate, 0) + 1
+
+                candidate_counts[candidate] = (
+                    candidate_counts.get(candidate, 0) + 1
+                )
 
     frequent_itemsets = {}
 
     for candidate, count in candidate_counts.items():
+
         if count >= min_support:
             frequent_itemsets[candidate] = count
 
@@ -95,9 +112,11 @@ def count_candidates(transactions, candidates, min_support):
 
 
 def apriori(transactions, min_support):
+
     all_frequent_itemsets = []
 
     L1 = find_frequent_1_itemsets(transactions, min_support)
+
     all_frequent_itemsets.append(L1)
 
     while True:
@@ -125,9 +144,8 @@ def apriori(transactions, min_support):
 
     return all_frequent_itemsets
 
-def print_results(all_frequent_itemsets, input_file, min_support):
 
-    def print_results(all_frequent_itemsets, input_file, min_support):
+def print_results(all_frequent_itemsets, input_file, min_support):
 
     print("Input file:", input_file)
     print("Minimum support:", min_support)
@@ -135,7 +153,9 @@ def print_results(all_frequent_itemsets, input_file, min_support):
     all_sets = []
 
     for level in all_frequent_itemsets:
+
         for itemset, count in level.items():
+
             all_sets.append((itemset, count))
 
     maximal_itemsets = []
@@ -146,7 +166,10 @@ def print_results(all_frequent_itemsets, input_file, min_support):
 
         for other_itemset, _ in all_sets:
 
-            if itemset != other_itemset and itemset.issubset(other_itemset):
+            if (
+                itemset != other_itemset
+                and itemset.issubset(other_itemset)
+            ):
                 is_subset = True
                 break
 
@@ -157,9 +180,13 @@ def print_results(all_frequent_itemsets, input_file, min_support):
         maximal_itemsets,
         key=lambda x: (len(x[0]), sorted(x[0]))
     ):
+
         print(set(itemset), ":", count)
 
-    print("\nTotal number of frequent itemsets:", len(maximal_itemsets) + 1)
+    print(
+        "\nTotal number of frequent itemsets:",
+        len(maximal_itemsets) + 1
+    )
 
 
 def main():
