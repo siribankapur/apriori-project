@@ -161,7 +161,7 @@ def print_results(all_frequent_itemsets, input_file, min_support):
     ):
         print(set(itemset), ":", count)
 
-    print("\nTotal number of frequent itemsets:", len(filtered_sets))
+    print("\nTotal number of frequent itemsets:", len(maximal_itemsets) + 1)
 
 
 def main():
