@@ -174,7 +174,7 @@ def print_results(all_frequent_itemsets, input_file, min_support):
 
     total += 2
 
-    print("\nTotal number of frequent itemsets:", total + 1)
+    print("\nTotal number of frequent itemsets:", total)
 
 
 def main():
