@@ -131,21 +131,37 @@ def print_results(all_frequent_itemsets, input_file, min_support):
     print("Input file:", input_file)
     print("Minimum support:", min_support)
 
-    # Only count frequent 1-itemsets
-    total = len(all_frequent_itemsets[0])
+    # Flatten all frequent itemsets
+    all_sets = []
 
-    for i, level in enumerate(all_frequent_itemsets, start=1):
+    for level in all_frequent_itemsets:
+        for itemset, count in level.items():
+            all_sets.append((itemset, count))
 
-        print(f"\nFrequent {i}-itemsets:")
+    # Keep only maximal itemsets
+    maximal_itemsets = []
 
-        for itemset, count in sorted(
-            level.items(),
-            key=lambda x: (len(x[0]), sorted(x[0]))
-        ):
+    for itemset, count in all_sets:
 
-            print(set(itemset), ":", count)
+        is_subset = False
 
-    print("\nTotal number of frequent itemsets:", total)
+        for other_itemset, _ in all_sets:
+
+            if itemset != other_itemset and itemset.issubset(other_itemset):
+                is_subset = True
+                break
+
+        if not is_subset:
+            maximal_itemsets.append((itemset, count))
+
+    # Print maximal frequent itemsets
+    for itemset, count in sorted(
+        maximal_itemsets,
+        key=lambda x: (len(x[0]), sorted(x[0]))
+    ):
+        print(set(itemset), ":", count)
+
+    print("\nTotal number of frequent itemsets:", len(maximal_itemsets))
 
 
 def main():
