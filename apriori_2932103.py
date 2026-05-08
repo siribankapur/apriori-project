@@ -125,43 +125,43 @@ def apriori(transactions, min_support):
 
     return all_frequent_itemsets
 
-
 def print_results(all_frequent_itemsets, input_file, min_support):
 
     print("Input file:", input_file)
     print("Minimum support:", min_support)
 
-    # Flatten all frequent itemsets
     all_sets = []
 
     for level in all_frequent_itemsets:
         for itemset, count in level.items():
             all_sets.append((itemset, count))
 
-    # Keep only maximal itemsets
-    maximal_itemsets = []
+    filtered_sets = []
 
     for itemset, count in all_sets:
 
-        is_subset = False
+        remove = False
 
-        for other_itemset, _ in all_sets:
+        # Remove only single-item subsets
+        if len(itemset) == 1:
 
-            if itemset != other_itemset and itemset.issubset(other_itemset):
-                is_subset = True
-                break
+            for other_itemset, _ in all_sets:
 
-        if not is_subset:
-            maximal_itemsets.append((itemset, count))
+                if len(other_itemset) > 1 and itemset.issubset(other_itemset):
+                    remove = True
+                    break
 
-    # Print maximal frequent itemsets
+        if not remove:
+            filtered_sets.append((itemset, count))
+
+    # Print results
     for itemset, count in sorted(
-        maximal_itemsets,
+        filtered_sets,
         key=lambda x: (len(x[0]), sorted(x[0]))
     ):
         print(set(itemset), ":", count)
 
-    print("\nTotal number of frequent itemsets:", len(maximal_itemsets))
+    print("\nTotal number of frequent itemsets:", len(filtered_sets))
 
 
 def main():
